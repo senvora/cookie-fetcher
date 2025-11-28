@@ -2,7 +2,7 @@ name: IPTV Port Scanner
 
 on:
   workflow_dispatch:     # Manual trigger
-  push:                  # Run when you push new code
+  push:                  # Runs on push to main
     branches:
       - main
 
@@ -12,12 +12,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # needed for committing back
+          fetch-depth: 0   # needed for committing changes
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
@@ -26,25 +26,17 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
-      - name: Run IPTV Scanner
+      - name: Run IPTV scanner
         run: |
           python scan.py
 
-      - name: Upload scan results as artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: iptv_scan_results
-          path: |
-            valid_ports.txt
-            playlist.m3u
-
-      - name: Configure Git user
+      - name: Configure Git
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
 
-      - name: Commit scan results back to repo
+      - name: Commit and push results
         run: |
           git add valid_ports.txt playlist.m3u || true
-          git commit -m "Update scan results (auto)" || echo "No changes to commit"
+          git commit -m "Auto-update scan results" || echo "No changes to commit"
           git push || echo "No changes to push"
