@@ -1,4 +1,4 @@
-name: IPTV Port Scanner
+name: Scan
 
 on:
   workflow_dispatch:     # Manual trigger
@@ -28,7 +28,7 @@ jobs:
 
       - name: Run IPTV scanner
         run: |
-          python scan.py
+          python scripts/scan.py
 
       - name: Configure Git
         run: |
